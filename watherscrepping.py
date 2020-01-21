@@ -3,35 +3,40 @@ import requests
 from bs4 import BeautifulSoup
 
 page = requests.get(
-    'https://forecast.weather.gov/MapClick.php?lat=25.7748&lon=-80.1977#.XgZ_f0dKhEY'
+    'https://entretenimento.uol.com.br/filmes-e-series',
+    'https://www.uol.com.br/esporte/'
     )
 
 soup = BeautifulSoup(page.content, 'html.parser')
-week = soup.find(id = 'seven-day-forecast-body')
+week = soup.find(class_ = 'collection-index')
+# week1 = soup.find(class_ = 'six-highlights-with-photo')
+# print(week,week1)
 # print(week)
+list1 = week.find_all(class_ = 'thumbnail-standard')
+# print(list1)
 
-items = (week.find_all(class_='tombstone-container'))
-# print(items)
+print(list1[0].find(class_ = 'thumb-title').get_text())
 
-print(items[0].find(class_='period-name').get_text())
-print(items[0].find(class_='short-desc').get_text())
-print(items[0].find(class_='temp').get_text())
+# print(list1[0].find(class_ = 'thumb-description').get_text())
 
-period_name = [items.find(class_='period-name').get_text() for items in items]
-short_descriptions = [items.find(class_='short-desc').get_text() for items in items]
-tempuratures = [items.find(class_='temp').get_text() for items in items]
+print(list1[0].find(class_ = 'thumb-time').get_text())
 
-print(period_name)
-print(short_descriptions)
-print(tempuratures)
+thumb_title = [list1.find(class_ = 'thumb-title').get_text() for list1 in list1]
 
-weather_stuff = pd.DataFrame(
-    {
-        'period': period_name,
-        'short_descriptions': short_descriptions,
-        'tempuratures': tempuratures,
-    }
+
+thumb_time = [list1.find(class_ = 'thumb-time').get_text() for list1 in list1]
+
+# print(thumb_title)
+# # # print(thumb_description)
+# print(thumb_time)
+
+entertainment_stuff = pd.DataFrame(
+  {
+    'thumb-title': thumb_title,
+    'thumb-time': thumb_time,
+  }
 )
-print(weather_stuff)
 
-weather_stuff.to_csv('watherstuff.csv')
+print(entertainment_stuff)
+
+entertainment_stuff.to_csv('entertainment_stuff.csv')
